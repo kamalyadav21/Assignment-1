@@ -68,3 +68,40 @@ int main(){
 
 
 
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter the elements:" << endl;
+    for (int i = 0; i < n; i++){
+        cin >> arr[i];
+    }
+    int swaps = 0; // Initialize the swap counter
+    for (int i = 0; i < n; i++){
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    for (int i = 1; i < n; i++){
+        int number = arr[i];
+        int j = i - 1;
+        for (; j > -1 && (number < arr[j]); j--){
+            arr[j + 1] = arr[j];
+            swaps++; // Increment swap counter for each shift
+        }
+        if (j != i - 1){
+            arr[j + 1] = number;
+        }
+    }
+    for (int i = 0; i < n; i++){
+        cout << arr[i] << " ";
+    }
+    cout << "\nNumber of swaps: " << swaps << endl; // Output number of swaps
+}
+
+
+
+
