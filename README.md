@@ -1,105 +1,132 @@
-# Assignment-1
-
-#include<bits/stdc++.h>
+#include <iostream>
+#include <algorithm>
 using namespace std;
-
-int comparisons = 0; // Global variable to count comparisons
-
-void merge(int *arr,int l,int mid,int r){
-    int an=mid-l+1;
-    int bn=r-mid;
-    int a[an],b[bn];
-    for (int i=0;i<an;i++){
-        a[i]=arr[l+i];
-    }
-    for (int j=0;j<bn;j++){
-        b[j]=arr[mid+1+j];
-    }
-    int i=0,j=0,k=l;
-    while (i<an && j<bn){
-        comparisons++; // Increment comparisons counter
-        if (a[i]<b[j]){
-            arr[k++]=a[i++];
-        }
-        else{
-            arr[k++]=b[j++];
+int p(int arr[], int s, int e) {
+    int pivot = arr[s];
+    int pivotIdx = s;
+    for (int i = s + 1; i <= e; i++) {
+        if (arr[i] < pivot) {
+            swap(arr[++pivotIdx], arr[i]);
         }
     }
-    while (i<an){
-        arr[k++]=a[i++];
-    }
-    while (j<bn){
-        arr[k++]=b[j++];
-    }
+    swap(arr[s], arr[pivotIdx]);
+    return pivotIdx;
 }
-
-void mergesort(int *arr,int l,int r){
-    if (l>=r){
-        return;
-    }
-    int mid=l+(r-l)/2;
-    mergesort(arr,l,mid);
-    mergesort(arr,mid+1,r);
-    merge(arr,l,mid,r);
-}
-
-int main(){
-    cout<<"Enter the no. of elements"<<endl;
-    int n;
-    cin>>n;
-    int arr[n];
-    for (int i=0;i<n;i++){
-        cout<<"Enter the element";
-    int k;
-    cin>>k;
-    arr[i]=k;
-    }
-    
-    cout<<endl;
-    mergesort(arr,0,n-1);
-    for (int i=0;i<n;i++){
-        cout<<arr[i]<<" ";
-    }
-    cout << "\nNumber of comparisons: " << comparisons << endl; // Output number of comparisons
-}
-
-
-
-
-
-
-#include<bits/stdc++.h>
-using namespace std;
-
-int main(){
-    int n;
-    cout << "Enter the number of elements: ";
-    cin >> n;
-    int arr[n];
-    cout << "Enter the elements:" << endl;
-    for (int i = 0; i < n; i++){
-        cin >> arr[i];
-    }
-    int swaps = 0; // Initialize the swap counter
-    for (int i = 0; i < n; i++){
+void quicksort(int arr[], int s, int e) {
+    if (s >= e) return;
+    int pivotIdx = p(arr, s, e);
+    quicksort(arr, s, pivotIdx - 1);
+    quicksort(arr, pivotIdx + 1, e);}
+int main() {
+    int arr[] = {3, 40, 2, 51, 9};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    quicksort(arr, 0, n - 1);
+    for (int i = 0; i < n; i++) {
         cout << arr[i] << " ";
     }
     cout << endl;
-    for (int i = 1; i < n; i++){
-        int number = arr[i];
-        int j = i - 1;
-        for (; j > -1 && (number < arr[j]); j--){
-            arr[j + 1] = arr[j];
-            swaps++; // Increment swap counter for each shift
-        }
-        if (j != i - 1){
-            arr[j + 1] = number;
+    return 0;
+}
+
+#include<bits/stdc++.h>
+using namespace std;
+int getMax(int arr[],int n){
+    int max = arr[0];
+    for(int i = 1;i<n;i++){
+        if (arr[i]>max){
+            max = arr[i];
         }
     }
-    for (int i = 0; i < n; i++){
-        cout << arr[i] << " ";
+    return max;
+}
+void countingsort(int arr[],int n,int exp){
+    int output[n];
+    // int m = getMax(arr,n);
+    int count[10]={0};
+    for(int i = 0;i<n;i++){
+        count[(arr[i]/exp)%10]++;
     }
-    cout << "\nNumber of swaps: " << swaps << endl; // Output number of swaps
+    for(int i = 1;i<10;i++){
+        count[i]+=count[i-1];
+    }
+    for(int i = n-1;i>=0;i--){
+        output[count[(arr[i]/exp)%10]-1]=arr[i];
+        count[(arr[i]/exp)%10]--;
+    }
+    for(int i = 0;i<n;i++){
+        arr[i] = output[i];
+    }
+
+}
+void radixsort(int arr[],int n){
+    int m = getMax(arr,n);
+    for(int exp = 1;m/exp>0;exp*=10){
+        countingsort(arr,n,exp);
+    }
+}
+
+int main()
+{
+    int arr[] = { 170, 45, 75, 90, 802, 24, 2, 66 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    // Function Call
+    radixsort(arr, n);
+    for(int i = 0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+    return 0;
+}
+
+
+#include<bits/stdc++.h>
+using namespace std;
+void insertion_sort(vector<float> b){
+    int key;
+    for(int i = b.size()-1;i>=0;i--){
+        key = b[i];
+        int j = i-1;
+
+        while(j>=0 && b[j]>key){
+            b[j+1]=b[j];
+            j--;
+        }
+        b[j+1]=key;
+    }
+}
+void bucket_sort(float arr[],int n){
+    vector<float> buckets[n];
+    int bi;
+    int j;
+    for (int i = 0;i<n;i++){
+        bi = arr[i]*n;
+        buckets[bi].push_back(arr[i]);
+    }
+    for(int i = 0;i<n;i++){
+        //cout<<"ye";
+
+        insertion_sort(buckets[i]);
+    }
+    int k= 0;
+    for(int i = 0;i<n;i++){
+        j = buckets[i].size();
+        for(int t = 0;t<j;t++){
+            arr[k++] = buckets[i][t];
+        }
+    }
+}
+int main(){
+    float arr[] = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    bucket_sort(arr,n);
+
+    //cout<<"ye";
+
+    for(int i = 0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    return 0;
 }
 
 
